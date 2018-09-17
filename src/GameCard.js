@@ -12,7 +12,7 @@ class GameCard extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot){
     //if we recieve a new board id reset state
-    if(prevProps.id != this.props.id)
+    if(prevProps.id !== this.props.id)
       this.setState({selected: false})
   }
 
