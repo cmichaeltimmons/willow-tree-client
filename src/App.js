@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import GameBoard from './GameBoard'
+import { newBoard } from './api'
 
 class App extends Component {
 
@@ -9,6 +10,7 @@ class App extends Component {
     this.state = {}
     this.newGame = this.newGame.bind(this)
   }
+
   async componentDidMount() {
     const response = await axios.get('https://wta-namegame.herokuapp.com/api/game')
     this.setState({
@@ -18,34 +20,8 @@ class App extends Component {
   }
 
   newGame() {
-    //select 5 random, distinct indexes 
-    //the indexes are used to select people for new game board
-    const randomNums = new Set()
-    while (randomNums.size < 5) {
-      randomNums.add(Math.floor(Math.random() * this.state.people.length))
-    }
-    const selectedIndexes = Array.from(randomNums)
-    
-    //map selected indexes to people 
-    const selectedPeople = selectedIndexes.map(newIndex => {
-      const name = this.state.people[newIndex].firstName + ' ' + this.state.people[newIndex].lastName
-      const url = this.state.people[newIndex].headshot.url
-      return ({
-        name,
-        url
-      })
-    })
-
-    //create board id using epoch time
-    const theDate = new Date();
-    const id = theDate.getTime();
-
     this.setState({
-      board: {
-        people: selectedPeople,
-        winningIndex: Math.floor(Math.random() * 5),
-        id
-      }
+      board: newBoard(this.state.people)
     })
   }
 
@@ -53,8 +29,8 @@ class App extends Component {
     const { board } = this.state
     return (
       <div className="App">
-            <button onClick={this.newGame}>Play</button>
-            {board && <GameBoard board={board}/>}
+        <button onClick={this.newGame}>Play</button>
+        {board && <GameBoard board={board} />}
       </div>
     )
   }
